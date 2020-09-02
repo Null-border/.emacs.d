@@ -374,5 +374,5 @@ let's pray that no missing will happen till we set up the auto save.
 
 
 * other customizations
-still working on.  put "emacs-lisp" after finish.  
+
 

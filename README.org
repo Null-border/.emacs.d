@@ -1,4 +1,21 @@
 README
 
-* This is my own emacs configurations
-* 
+* THIS IS MY OWN EMACS CONFIGURATIONS
+* STRUCTURE
+** File Structure
+"init.el" is the fist file loaded.  
+Then load "myinit.org".  
+
+** Code Block Structure
+The codes are seperated by the activities that will taken place ever a humen uses emacs.
+- look for (files or codes or just informations needed)
+- watch (the file)
+- form (form the file in different ways, that improves understanding.)
+- deform (the actions to edit whether "structure" or "char" or "file" itself an so on)
+- close (a file an what to do along with the action to improve efficiency)
+
+The "other customizations" is for "source block that haven't finish working on yet"
+once finish, how could be not able to be seperated into diffent steps?
+
+* OTHER WORDS
+CASE CLOSED.  THAT'S ALL.  
