@@ -107,19 +107,21 @@ rainbow cursor
    #+end_src
 *** battery
 #+BEGIN_SRC emacs-lisp
-  (setq  display-battery-mode t
-         battery-load-critical 25
-         battery-load-low 50
-         battery-mode-line-format "  [%p%% %m]  "
-         battery-update-interval 30)
+  (display-battery-mode)
+
+  (setq  battery-load-critical 25
+	 battery-load-low 50
+	 battery-mode-line-format "  [%p%% %m]  "
+	 battery-update-interval 30)
 #+END_SRC
 *** Time
   #+BEGIN_SRC emacs-lisp
-    (setq display-time-mode t
-          display-time-24hr-format t
-          display-time-day-and-date t
-          display-time-default-load-average nil
-          display-time-format "%H:%M %m-%d %a")
+    (display-time-mode)
+
+    (setq display-time-24hr-format t
+	  display-time-day-and-date t
+	  display-time-default-load-average nil
+	  display-time-format "%H:%M %m-%d %a")
 
   #+END_SRC
 *** scroll
@@ -174,7 +176,6 @@ displaying line number on the left is ugly.
       (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
 
   #+END_SRC
-
 *** info help
   #+BEGIN_SRC emacs-lisp
     (use-package 
