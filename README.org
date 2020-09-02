@@ -1,0 +1,4 @@
+README
+
+* This is my own emacs configurations
+* 
