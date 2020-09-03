@@ -4,6 +4,11 @@
 
 
 * find out
+** confirm
+ #+BEGIN_SRC emacs-lisp
+   (fset 'yes-or-no-p 'y-or-n-p)
+
+ #+END_SRC
 ** buffer switch
 *** Counsel
   #+BEGIN_SRC emacs-lisp
@@ -25,7 +30,7 @@
 	(setq ivy-use-virtual-buffers t)
 	(setq ivy-display-style 'fancy)))
   #+END_SRC
-** Try
+** Tr
  #+BEGIN_SRC emacs-lisp
  (use-package try
    :ensure t
@@ -113,6 +118,10 @@ rainbow cursor
 	 battery-load-low 50
 	 battery-mode-line-format "  [%p%% %m]  "
 	 battery-update-interval 30)
+#+END_SRC
+*** average load
+#+BEGIN_SRC emacs-lisp
+  (setq display-time-load-average-threshold 100)
 #+END_SRC
 *** Time
   #+BEGIN_SRC emacs-lisp
@@ -214,32 +223,16 @@ displaying line number on the left is ugly.
 ** pdf
   #+BEGIN_SRC emacs-lisp
     (use-package pdf-tools
-      :defer t
+      :ensure t
       :config
+      (pdf-tools-install)
       (setq-default pdf-view-display-size 'fit-width)
-      :bind
-      (:map pdf-view-mode-map
-	    ("<s-spc>" . pdf-view-scroll-down-or-next-page)
-	    ("g"  . pdf-view-first-page)
-	    ("G"  . pdf-view-last-page)
-	    ("l"  . image-forward-hscroll)
-	    ("h"  . image-backward-hscroll)
-	    ("j"  . pdf-view-next-page)
-	    ("k"  . pdf-view-previous-page)
-	    ("e"  . pdf-view-goto-page)
-	    ("u"  . pdf-view-revert-buffer)
-	    ("al" . pdf-annot-list-annotations)
-	    ("ad" . pdf-annot-delete)
-	    ("aa" . pdf-annot-attachment-dired)
-	    ("am" . pdf-annot-add-markup-annotation)
-	    ("at" . pdf-annot-add-text-annotation)
-	    ("y"  . pdf-view-kill-ring-save)
-	    ("i"  . pdf-misc-display-metadata)
-	    ("s"  . pdf-occur)
-	    ("b"  . pdf-view-set-slice-from-bounding-box)
-	    ("r"  . pdf-view-reset-slice)))
-  #+END_SRC
+      )
 
+    (use-package org-pdftools
+      :ensure t)
+
+  #+END_SRC
 
 * form
 ** mode customize
@@ -269,8 +262,16 @@ displaying line number on the left is ugly.
   (global-set-key "\C-ca" 'org-agenda)
   (global-set-key "\C-cb" 'org-iswitchb)
   #+END_SRC
-**** 
+**** TODO config
  #+BEGIN_SRC emacs-lisp
+   (setq org-cycle-emulate-tab t
+	 org-cycle-global-at-bob t
+	 )
+
+ #+END_SRC
+**** startup
+ #+BEGIN_SRC emacs-lisp
+;; hide src blocks
    (setq org-hide-block-startup t
 	 )
 
@@ -370,5 +371,10 @@ let's pray that no missing will happen till we set up the auto save.
 
 
 * other customizations
+
+
+
+
+
 
 
