@@ -4,8 +4,8 @@
 ;; startup adjustments
 (setq debug-on-error t
       gc-cons-threshold most-positive-fixnum
-      inhibit-compacting-font-caches t
-      garbage-collection-messages nil)
+      inhibit-compacting-font-caches t)
+
 
 ;; Bootstrap config
 (require 'package)
@@ -28,7 +28,8 @@
 ;; Bootstrap
 (org-babel-load-file "~/.emacs.d/myinit.org")
 
-
+;; Welcome word
+(message "Welcome to Emacs !")
 
 
 
@@ -42,9 +43,9 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(org-agenda-files '("~/ORG/gtd.org" "~/.emacs.d/myinit.org"))
- '(org-mouse-features '(activate-stars activate-bullets activate-checkboxes))
+ '(org-mouse-features '(activate-stars activate-bullets activate-checkboxes) t)
  '(package-selected-packages
-   '(undo-tree smex org-plus-contrib htmlize ox-reveal org-pdftools org-pdfview info-colors rainbow-delimiters ripgrep flycheck pdf-tools hungry-delete org which-key use-package try tangotango-theme restart-emacs org-bullets counsel auto-complete)))
+   '(figlet undo-tree smex org-plus-contrib htmlize ox-reveal org-pdftools org-pdfview info-colors rainbow-delimiters ripgrep flycheck pdf-tools hungry-delete org which-key use-package try tangotango-theme restart-emacs org-bullets counsel auto-complete)))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.

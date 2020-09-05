@@ -1,33 +1,65 @@
 
 
 
-* background
-** idle setups
-   #+begin_src emacs-lisp
-     (setq idle-use-function '(garbage-collect)
-	   idle-play-function '(zone)
-	   idle-use-time 5
-	   idle-play-time 45
-	   n 0)
-
-     (while (< n (length idle-use-function))
-       (run-with-idle-timer idle-use-time t (nth n idle-use-function))
-       (setq n (1+ n)))
-     (setq n 0)
-
-     (while (< n (length idle-play-function))
-       (run-with-idle-timer idle-play-time t (nth n idle-play-function))
-       (setq n (1+ n)))
-     (setq n 0)
-   #+end_src
-
 
 * find out
-** confirm
- #+BEGIN_SRC emacs-lisp
-   (fset 'yes-or-no-p 'y-or-n-p)
+** message
+   #+begin_src emacs-lisp
+     (setq garbage-collection-messages nil
+	   large-file-warning-threshold nil)
+     (fset 'yes-or-no-p 'y-or-n-p)
+   #+end_src
 
- #+END_SRC
+** buffer display
+   #+begin_src emacs-lisp
+     ;; Configure ‘display-buffer’ behaviour for some special buffers
+     (setq display-buffer-alist
+	   `(;; Messages, errors, processes, Calendar in the bottom side window
+	     (,(rx bos (or "*Apropos"                ; Apropos buffers
+			   "*Man"                    ; Man buffers
+			   ;; "*Help"                   ; Help buffers
+			   "*Warnings*"              ; Emacs warnings
+			   "*Process List*"          ; Processes
+			   "*Proced"                 ; Proced processes list
+			   "*Compile-Log*"           ; Emacs byte compiler log
+			   "*compilation"            ; Compilation buffers
+			   "*Flycheck errors*"       ; Flycheck error list
+			   "*Calendar"               ; Calendar window
+			   "*env-info"               ; Environment information
+			   "*Cargo"                  ; Cargo process buffers
+			   "*Word"                   ; WordNut buffers
+			   "*Reconcile*"             ; Reconcile in ledger-mode
+			   (and (1+ nonl) " output*"))) ; AUCTeX command output
+	      (display-buffer-reuse-window display-buffer-in-side-window)
+	      (side . bottom)
+	      (reusable-frames . visible)
+	      (window-height . 0.45))
+	     ;; REPLs on the bottom half
+	     (,(rx bos (or "*cider-repl"     ; CIDER REPL
+			   "*intero"         ; Intero REPL
+			   "*idris-repl"     ; Idris REPL
+			   "*ielm"           ; IELM REPL
+			   "*SQL"))          ; SQL REPL
+	      (display-buffer-reuse-window display-buffer-in-side-window)
+	      (side . bottom)
+	      (reusable-frames . visible)
+	      (window-height . 0.50))
+	     ;; Open shell in a single window
+	     (,(rx bos "*shell")
+	      (display-buffer-same-window)
+	      (reusable-frames . nil))
+	     ;; Open PDFs in the right side window
+	     (,(rx bos "*pdf")
+	      (display-buffer-reuse-window display-buffer-in-side-window)
+	      (side . right)
+	      (reusable-frames . visible)
+	      (window-width . 0.5))
+	     ;; Let `display-buffer' reuse visible frames for all buffers. This must
+	     ;; be the last entry in `display-buffer-alist', because it overrides any
+	     ;; previous entry with more specific actions.
+	     ("." nil (reusable-frames . visible))))
+   #+end_src
+
 ** buffer switch
 *** Counsel
   #+BEGIN_SRC emacs-lisp
@@ -46,37 +78,45 @@
 	(setq ivy-use-virtual-buffers t)
 	(setq ivy-display-style 'fancy)))
   #+END_SRC
-** Try
- #+BEGIN_SRC emacs-lisp
- (use-package try
-   :ensure t
-   )
+** UTILS
+*** Try
+  #+BEGIN_SRC emacs-lisp
+  (use-package try
+    :ensure t
+    )
 
- #+END_SRC
-** Which Key
- #+BEGIN_SRC emacs-lisp
-   (use-package which-key
-     :ensure t
-     :config (which-key-mode)
-     )
+  #+END_SRC
+*** Which Key
+  #+BEGIN_SRC emacs-lisp
+    (use-package which-key
+      :ensure t
+      :config (which-key-mode)
+      )
 
- #+END_SRC
+  #+END_SRC
 
-** smex
-   #+begin_src emacs-lisp
-     (use-package smex)
-   #+end_src
-** undo tree
-   #+begin_src emacs-lisp
-;;     (use-package undo-tree
-;;       :diminish undo-tree-mode
-;;       :config (global-undo-tree-mode))
+*** smex
+    #+begin_src emacs-lisp
+      (use-package smex)
+    #+end_src
+*** undo tree
+    #+begin_src emacs-lisp
+ ;;     (use-package undo-tree
+ ;;       :diminish undo-tree-mode
+ ;;       :config (global-undo-tree-mode))
 
-   #+end_src
+    #+end_src
+
 
 
 * look
 ** interface
+*** frame
+    #+begin_src emacs-lisp
+      (setq frame-title-format "nullmacs@sand_dream")
+      (toggle-frame-maximized)
+    #+end_src
+
 *** bars
    #+BEGIN_SRC emacs-lisp
 (tool-bar-mode -1)
@@ -149,15 +189,16 @@ rainbow cursor
 #+END_SRC
 *** average load
 #+BEGIN_SRC emacs-lisp
-  (setq display-time-load-average-threshold 100)
+  ;;  (setq display-time-load-average-threshold 100)
+  (setq display-time-default-load-average nil)
 #+END_SRC
+
 *** Time
   #+BEGIN_SRC emacs-lisp
     (display-time-mode)
 
     (setq display-time-24hr-format t
 	  display-time-day-and-date t
-	  display-time-default-load-average nil
 	  display-time-format "%H:%M %m-%d %a")
 
   #+END_SRC
@@ -170,14 +211,10 @@ rainbow cursor
 	   scroll-down-aggressively 0.01)
       
    #+END_SRC
-*** line
+*** line number
 displaying line number on the left is ugly. 
   #+BEGIN_SRC emacs-lisp
     ;; 
-  #+END_SRC
-*** collomn
-  #+BEGIN_SRC emacs-lisp
-    (setq-default fill-column 80)
   #+END_SRC
 *** paren
   #+BEGIN_SRC emacs-lisp
@@ -226,47 +263,54 @@ displaying line number on the left is ugly.
  (setq initial-scratch-message nil)
 
  #+END_SRC
-** Auto Complete
- #+BEGIN_SRC emacs-lisp
-   (use-package auto-complete
-     :ensure t
-     :init
-     (progn
-       (ac-config-default)
-       (global-auto-complete-mode t)
-       ))
-   ;;(use-package company
-   ;;  :hook
-   ;;  ((prog-mode . company-mode)
-   ;;   (conf-mode . company-mode)
-   ;;   (shell-mode . company-mode)))
-
- #+END_SRC
-** magit
+** line wrap
    #+begin_src emacs-lisp
-     ;; (use-package magit
-     ;;   :init (setq magit-completing-read-function 'ivy-completing-read))
-     ;;     (use-package diff-hl)
-
+     (set-default 'truncate-lines t)
    #+end_src
-** projectile
-   #+begin_src emacs-lisp
 
-   #+end_src
-** pdf
+** UTILS
+*** Auto Complete
   #+BEGIN_SRC emacs-lisp
-    (use-package pdf-tools
+    (use-package auto-complete
       :ensure t
-      :config
-      (pdf-tools-install)
-      (setq-default pdf-view-display-size 'fit-width)
-      )
+      :init
+      (progn
+	(ac-config-default)
+	(global-auto-complete-mode t)
+	))
+    ;;(use-package company
+    ;;  :hook
+    ;;  ((prog-mode . company-mode)
+    ;;   (conf-mode . company-mode)
+    ;;   (shell-mode . company-mode)))
+
+  #+END_SRC
+*** magit
+    #+begin_src emacs-lisp
+      ;; (use-package magit
+      ;;   :init (setq magit-completing-read-function 'ivy-completing-read))
+      ;;     (use-package diff-hl)
+
+    #+end_src
+*** projectile
+    #+begin_src emacs-lisp
+
+    #+end_src
+*** pdf
+   #+BEGIN_SRC emacs-lisp
+     (use-package pdf-tools
+       :ensure t
+       :config
+       (pdf-tools-install)
+       (setq-default pdf-view-display-size 'fit-width)
+       )
+   #+END_SRC
+
+*** browse
+  #+BEGIN_SRC emacs-lisp
+ ;;   (use-package firefox-controller)
   #+END_SRC
 
-** browse
- #+BEGIN_SRC emacs-lisp
-;;   (use-package firefox-controller)
- #+END_SRC
 
 
 * form
@@ -373,6 +417,7 @@ displaying line number on the left is ugly.
      #+end_src
 
 
+
 * deforming
 ** replace
    #+BEGIN_SRC emacs-lisp
@@ -388,7 +433,11 @@ displaying line number on the left is ugly.
     (setq  line-move-ignore-invisible t
 	   next-line-add-newlines t)
   #+END_SRC
-** utils
+** fill collomn
+  #+BEGIN_SRC emacs-lisp
+    (setq-default fill-column 78)
+  #+END_SRC
+** UTILS
 *** flycheck
   #+BEGIN_SRC emacs-lisp
 ;;    (use-package flycheck
@@ -397,8 +446,35 @@ displaying line number on the left is ugly.
 
   #+END_SRC
 
+*** figlet
+    #+begin_src emacs-lisp
+      (use-package figlet)
+    #+end_src
 
-* close
+* leaving
+** idle setups
+   #+begin_src emacs-lisp
+     (setq idle-use-function '(garbage-collect file-save)
+	   idle-play-function '(zone)
+	   idle-use-time 5
+	   idle-play-time 90
+	   n 0)
+
+     (while (< n (length idle-use-function))
+       (run-with-idle-timer idle-use-time t (nth n idle-use-function))
+       (setq n (1+ n)))
+     (setq n 0)
+
+     (while (< n (length idle-play-function))
+       (run-with-idle-timer idle-play-time t (nth n idle-play-function))
+       (setq n (1+ n)))
+     (setq n 0)
+
+     (defun file-save ()
+       "save file"
+       ;; not finished
+       )
+   #+end_src
 ** delete
   #+BEGIN_SRC emacs-lisp
 (setq delete-by-moving-to-trash t)
@@ -434,7 +510,25 @@ let's pray that no missing will happen till we set up the auto save.
    #+END_SRC
 
 
-* other customizations
+
+
+
+
+
+
+
+* TEST AREA
+  #+begin_src emacs-lisp
+
+
+
+
+  #+end_src
+* NO_NEED AREA
+gif-screencast
+
+
+
 
 
 
