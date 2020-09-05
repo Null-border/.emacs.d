@@ -1,6 +1,25 @@
 
 
 
+* background
+** idle setups
+   #+begin_src emacs-lisp
+     (setq idle-use-function '(garbage-collect)
+	   idle-play-function '(zone)
+	   idle-use-time 5
+	   idle-play-time 45
+	   n 0)
+
+     (while (< n (length idle-use-function))
+       (run-with-idle-timer idle-use-time t (nth n idle-use-function))
+       (setq n (1+ n)))
+     (setq n 0)
+
+     (while (< n (length idle-play-function))
+       (run-with-idle-timer idle-play-time t (nth n idle-play-function))
+       (setq n (1+ n)))
+     (setq n 0)
+   #+end_src
 
 
 * find out
@@ -12,10 +31,7 @@
 ** buffer switch
 *** Counsel
   #+BEGIN_SRC emacs-lisp
-  (use-package counsel
-    :ensure t
-    )
-
+    (use-package counsel)
   #+END_SRC
 *** Swiper
   #+BEGIN_SRC emacs-lisp
@@ -30,7 +46,7 @@
 	(setq ivy-use-virtual-buffers t)
 	(setq ivy-display-style 'fancy)))
   #+END_SRC
-** Tr
+** Try
  #+BEGIN_SRC emacs-lisp
  (use-package try
    :ensure t
@@ -45,6 +61,18 @@
      )
 
  #+END_SRC
+
+** smex
+   #+begin_src emacs-lisp
+     (use-package smex)
+   #+end_src
+** undo tree
+   #+begin_src emacs-lisp
+;;     (use-package undo-tree
+;;       :diminish undo-tree-mode
+;;       :config (global-undo-tree-mode))
+
+   #+end_src
 
 
 * look
@@ -216,8 +244,13 @@ displaying line number on the left is ugly.
  #+END_SRC
 ** magit
    #+begin_src emacs-lisp
-;;     (use-package magit)
-;;     (use-package diff-hl)
+     ;; (use-package magit
+     ;;   :init (setq magit-completing-read-function 'ivy-completing-read))
+     ;;     (use-package diff-hl)
+
+   #+end_src
+** projectile
+   #+begin_src emacs-lisp
 
    #+end_src
 ** pdf
@@ -228,11 +261,13 @@ displaying line number on the left is ugly.
       (pdf-tools-install)
       (setq-default pdf-view-display-size 'fit-width)
       )
-
-    (use-package org-pdftools
-      :ensure t)
-
   #+END_SRC
+
+** browse
+ #+BEGIN_SRC emacs-lisp
+;;   (use-package firefox-controller)
+ #+END_SRC
+
 
 * form
 ** mode customize
@@ -244,9 +279,11 @@ displaying line number on the left is ugly.
 *** ORG mode
 **** org mode
   #+BEGIN_SRC emacs-lisp
-  (use-package org
-    :ensure t)
+    (use-package org
+      :ensure t)
+
   #+END_SRC
+
 **** org bullets
   #+BEGIN_SRC emacs-lisp
   (use-package org-bullets
@@ -262,13 +299,14 @@ displaying line number on the left is ugly.
   (global-set-key "\C-ca" 'org-agenda)
   (global-set-key "\C-cb" 'org-iswitchb)
   #+END_SRC
-**** TODO config
+**** cycle
  #+BEGIN_SRC emacs-lisp
    (setq org-cycle-emulate-tab t
 	 org-cycle-global-at-bob t
 	 )
 
  #+END_SRC
+**** capture
 **** startup
  #+BEGIN_SRC emacs-lisp
 ;; hide src blocks
@@ -276,48 +314,63 @@ displaying line number on the left is ugly.
 	 )
 
  #+END_SRC
-
-*** Tex relevent
-**** auctex
+**** table
  #+BEGIN_SRC emacs-lisp
-;;   (use-package auctex
-;;   :defer t
-;;     :hook
-;;     (LaTeX-mode . visual-line-mode)
-;;     (LaTeX-mode . flycheck-mode)
-;;     (LaTeX-mode . LaTeX-math-mode)
-;;     (LaTeX-mode . company-mode)
-;;     :custom
-;;     (preview-scale-function (quote preview-scale-from-face))
-;;     (preview-scale-function 3)
-;;     :config
-;;     (setq TeX-auto-save t
-;;	   TeX-parse-self t
-;;	   TeX-source-correlate-mode t
-;;	   TeX-source-correlate-method 'synctex
-;;	   TeX-view-program-selection (quote (
-;;					      (output-dvi style-pstricks "dvips and gv")
-;;					      (output-dvi "xdvi")
-;;					      (output-pdf "Zathura")
-;;					      (output-html "xdg-open")
-;;					      ))
-;;	   )
-;;     (setq-default TeX-master nil
-;;		   TeX-engine 'xetex)
-;;
-;;     (use-package company-auctex
-;;       :after (auctex company)
-;;       :init
-;;       (company-auctex-init))
-;;
-;;     (use-package auctex-latexmk
-;;       :after (auctex)
-;;       :init
-;;       (auctex-latexmk-setup)
-;;       :custom
-;;       (auctex-latexmk-inherit-TeX-PDF-mode t)))
+   (custom-set-faces '(org-table ((t (:foreground "#a9a1e1" :height 120 :family "Noto Sans Mono CJK SC Regular")))))
 
  #+END_SRC
+**** org-rempo, expand source block
+ #+BEGIN_SRC emacs-lisp
+   (require 'org-tempo)
+
+ #+END_SRC
+
+*** export engine
+#+BEGIN_SRC emacs-lisp
+  (use-package ox-reveal
+    :commands (org-reveal)
+    :init
+    (add-hook 'after-init-hook #'org-reveal)
+    :config
+    (setq org-reveal-root "file:///home/qb/.reveal.js"
+	  org-reveal-theme "moon"
+	  org-reveal-plugins '(classList markdown zoom notes)
+	  ))
+  (use-package htmlize)
+#+END_SRC
+
+*** Tex
+**** auctex
+ #+BEGIN_SRC emacs-lisp
+   (use-package tex
+     :ensure auctex)
+
+   (use-package auctex
+     :hook
+     (LaTeX-mode . visual-line-mode)
+     (LaTeX-mode . LaTeX-math-mode))
+
+ #+END_SRC
+
+*** C mode
+    #+begin_src emacs-lisp
+
+    #+end_src
+
+*** python
+    #+begin_src emacs-lisp
+;;      (use-package elpy
+;;	:config
+;;	(elpy-enable))
+
+      ;;(use-package jedi)
+      ;;(use-package jedi-direx)
+    #+end_src
+
+**** org-mouse
+     #+begin_src emacs-lisp
+       (setq org-mouse-features '(activate-checkboxes))
+     #+end_src
 
 
 * deforming
@@ -325,6 +378,10 @@ displaying line number on the left is ugly.
    #+BEGIN_SRC emacs-lisp
      (global-set-key "\C-r" 'query-replace)
    #+END_SRC
+** delete
+   #+begin_src emacs-lisp
+     (hungry-delete-mode 1)
+   #+end_src
 ** clipboard
 ** line
   #+BEGIN_SRC emacs-lisp
@@ -332,6 +389,13 @@ displaying line number on the left is ugly.
 	   next-line-add-newlines t)
   #+END_SRC
 ** utils
+*** flycheck
+  #+BEGIN_SRC emacs-lisp
+;;    (use-package flycheck
+;;      :hook
+;;      (prog-mode . flycheck-mode))
+
+  #+END_SRC
 
 
 * close
@@ -371,6 +435,10 @@ let's pray that no missing will happen till we set up the auto save.
 
 
 * other customizations
+
+
+
+
 
 
 
