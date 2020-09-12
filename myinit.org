@@ -113,7 +113,7 @@
 ** interface
 *** frame
     #+begin_src emacs-lisp
-      (setq frame-title-format "nullmacs@sand_dream")
+      (setq frame-title-format "Emacs@GNU_Project")
       (toggle-frame-maximized)
     #+end_src
 
@@ -122,10 +122,6 @@
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
    #+END_SRC
-*** startup message
-#+BEGIN_SRC emacs-lisp
-   (setq inhibit-startup-message t)
-#+END_SRC
 *** tranparent
 #+BEGIN_SRC emacs-lisp
 ;; (set-frame-parameter nil 'alpha 75)
@@ -139,6 +135,15 @@
     (enable-theme 'tangotango)
 
   #+END_SRC
+*** Welcome word
+    #+begin_src emacs-lisp
+      (setq inhibit-startup-message t)
+      (defun startup-echo-area-message ()
+	(if (daemonp)
+	    "Starting Emacs daemon."
+	  (substitute-command-keys
+	   "Welcome to GNU Emacs !")))
+    #+end_src
 *** cursor
 rainbow cursor
    #+begin_src emacs-lisp
@@ -451,6 +456,7 @@ displaying line number on the left is ugly.
       (use-package figlet)
     #+end_src
 
+
 * leaving
 ** idle setups
    #+begin_src emacs-lisp
@@ -509,23 +515,71 @@ let's pray that no missing will happen till we set up the auto save.
 (global-set-key (kbd "<f5>") 'revert-buffer)
    #+END_SRC
 
-
-
-
-
-
-
-
-
-* TEST AREA
+* TEST AREA[0/2]
+- [ ] use zone-like buffer to show "Welcome to gnu emacs !"
+- [ ] try out "pop screen"
   #+begin_src emacs-lisp
+    ;; try area
 
+    (defmacro Welcome-orig (&rest body)
+      `(with-current-buffer (get 'Welcome 'orig-buffer)
+	 ,@body))
+  
+    (defun Welcome ()
+      "display welcome"
+      (interactive)
+      (save-window-excursion
+	(let ((f (selected-frame))
+	      (outbuf (get-buffer-create "*Welcome*"))
+	      (text "Welcome to GNU Emacs! "))
+	  (put 'Welcome 'orig-buffer (current-buffer))
+	  (switch-to-buffer outbuf)
+	  (setq mode-name "Welcome")
+	  (erase-buffer)
+	  (setq buffer-undo-list t
+		truncate-lines t)
+	  (sit-for 0 500)
+      
+	  (let ((ct (and f (frame-parameter f 'cursor-type)))
+		(show-trailing-whitespace nil)
+		(restore (list '(kill-buffer outbuf))))
+	    (when ct
+	      (modify-frame-parameters f '((cursor-type . (bar . 0))))
+	      (setq restore (cons '(modify-frame-parameters
+				    f (list (cons 'cursor-type ct)))
+				  restore)))
+	
+	    ;; Make `restore' a self-disabling one-shot thunk.
+	    (setq restore `(lambda () ,@restore (setq restore nil)))
+	    (condition-case nil
+		(progn
+		  (if (input-pending-p)
+		      (discard-input)))
+	  ;; here!!!!!!!!!!!!!
+	      (error
+	       (funcall restore)
+	       (while (not (input-pending-p))
+		 (message "We were zoning when we wrote %s..." pgm)
+		 (sit-for 3)
+		 (message "...here's hoping we didn't hose your buffer!")
+		 (sit-for 3)))
+	      (quit
+	       (funcall restore)
+	       (ding)
+	       (message "Zoning...sorry")))
+	    (when restore (funcall restore))))))
 
 
 
   #+end_src
-* NO_NEED AREA
+  #+begin_src emacs-lisp
+
+  #+end_src
+
+* MAYBE USEFUL AREA
 gif-screencast
+
+
 
 
 

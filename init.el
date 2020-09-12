@@ -7,6 +7,7 @@
       inhibit-compacting-font-caches t)
 
 
+
 ;; Bootstrap config
 (require 'package)
 (setq package-enable-at-startup nil
@@ -28,8 +29,13 @@
 ;; Bootstrap
 (org-babel-load-file "~/.emacs.d/myinit.org")
 
-;; Welcome word
-(message "Welcome to Emacs !")
+
+
+
+
+
+
+
 
 
 
@@ -45,7 +51,7 @@
  '(org-agenda-files '("~/ORG/gtd.org" "~/.emacs.d/myinit.org"))
  '(org-mouse-features '(activate-stars activate-bullets activate-checkboxes) t)
  '(package-selected-packages
-   '(figlet undo-tree smex org-plus-contrib htmlize ox-reveal org-pdftools org-pdfview info-colors rainbow-delimiters ripgrep flycheck pdf-tools hungry-delete org which-key use-package try tangotango-theme restart-emacs org-bullets counsel auto-complete)))
+   '(posframe figlet undo-tree smex org-plus-contrib htmlize ox-reveal org-pdftools org-pdfview info-colors rainbow-delimiters ripgrep flycheck pdf-tools hungry-delete org which-key use-package try tangotango-theme restart-emacs org-bullets counsel auto-complete)))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
