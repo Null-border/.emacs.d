@@ -51,7 +51,7 @@
  '(org-agenda-files '("~/ORG/gtd.org" "~/.emacs.d/myinit.org"))
  '(org-mouse-features '(activate-stars activate-bullets activate-checkboxes) t)
  '(package-selected-packages
-   '(posframe figlet undo-tree smex org-plus-contrib htmlize ox-reveal org-pdftools org-pdfview info-colors rainbow-delimiters ripgrep flycheck pdf-tools hungry-delete org which-key use-package try tangotango-theme restart-emacs org-bullets counsel auto-complete)))
+   '(multiple-cursors zh-align posframe figlet undo-tree smex org-plus-contrib htmlize ox-reveal org-pdftools org-pdfview info-colors rainbow-delimiters ripgrep flycheck pdf-tools hungry-delete org which-key use-package try tangotango-theme restart-emacs org-bullets counsel auto-complete)))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -59,5 +59,3 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(org-table ((t (:foreground "#a9a1e1" :height 120 :family "Noto Sans Mono CJK SC Regular")))))
-
-
